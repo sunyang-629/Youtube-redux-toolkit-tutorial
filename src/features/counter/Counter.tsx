@@ -4,7 +4,7 @@ import { increment, decrement, reset, incrementByAmount } from "./counterSlice";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 
 const Counter: React.FC = () => {
-  const [incrementAmount, setIncrementAmount] = React.useState<string>(0);
+  const [incrementAmount, setIncrementAmount] = React.useState<number>(0);
 
   const addValue = Number(incrementAmount) || 0;
   const count = useAppSelector((state) => state.counter.count);
@@ -23,9 +23,9 @@ const Counter: React.FC = () => {
       </div>
 
       <input
-        type="text"
+        type="string"
         value={incrementAmount}
-        onChange={(e) => setIncrementAmount(e.target.value)}
+        onChange={(e) => setIncrementAmount(Number(e.target.value))}
       />
 
       <div>
