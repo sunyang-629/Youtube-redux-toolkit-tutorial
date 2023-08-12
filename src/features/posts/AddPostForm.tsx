@@ -1,14 +1,14 @@
 import React from "react";
-// import { useAppDispatch } from "../../app/hooks";
+import { useAppDispatch } from "../../app/hooks";
 // import { nanoid } from "@reduxjs/toolkit";
 import { postAdded } from "./postsSlice";
-import { useDispatch } from "react-redux";
+// import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
 import { v4 as uuidv4 } from "uuid";
 
 const AddPostForm: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [newPost, setNewPost] = React.useState<{
     title: string;
     content: string;

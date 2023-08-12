@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { selectAllPosts } from "./postsSlice";
 import PostAuthor from "./PostAuthor";
 import TimeAgo from "./TimeAgo";
+import ReactionButton from "./ReactionButton";
 
 const PostsList: React.FC = () => {
   //if the shape of the state every chagnes, we'll just need to change it in slice
@@ -21,6 +22,7 @@ const PostsList: React.FC = () => {
         <PostAuthor userId={post.userId} />
         <TimeAgo timestamp={post.date} />
       </p>
+      <ReactionButton post={post} />
     </article>
   ));
   return (

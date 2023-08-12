@@ -84,11 +84,28 @@ export const postsSlice = createSlice({
         };
       },
     },
+    reactionAdd: (
+      state,
+      action: PayloadAction<{
+        postId: string;
+        reaction: keyof {
+          thumbsUp: number;
+          wow: number;
+          heart: number;
+          rocket: number;
+          coffee: number;
+        };
+      }>
+    ) => {
+      const { postId, reaction } = action.payload;
+      const existingPost = state.find((post) => post.id === postId);
+      if (existingPost) existingPost.reactions[reaction] += 1;
+    },
   },
 });
 
 export const selectAllPosts = (state: RootState) => state.posts;
 
-export const { postAdded } = postsSlice.actions;
+export const { postAdded, reactionAdd } = postsSlice.actions;
 
 export default postsSlice.reducer;
