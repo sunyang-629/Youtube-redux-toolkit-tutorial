@@ -36,10 +36,20 @@ const initialReactions = {
   coffee: 0,
 };
 
-export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  const response = await axios.get<IPostType[]>(POST_URL);
-  return response.data;
-});
+export const fetchPosts = createAsyncThunk(
+  "posts/fetchPosts",
+  async () => {
+    const response = await axios.get<IPostType[]>(POST_URL);
+    return response.data;
+  },
+  {
+    condition: (_state, { getState }) => {
+      const { posts } = getState() as { posts: { status: string } };
+      if (posts.status === "fulfilled" || posts.status === "loading")
+        return false;
+    },
+  }
+);
 
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",

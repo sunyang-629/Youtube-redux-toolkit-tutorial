@@ -8,6 +8,7 @@ import {
   fetchPosts,
 } from "./postsSlice";
 import PostExcerpt from "./PostExcerpt";
+// import { PayloadAction } from "@reduxjs/toolkit";
 
 const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,7 +19,11 @@ const PostsList: React.FC = () => {
 
   React.useEffect(() => {
     if (postsStatus === "idle") dispatch(fetchPosts());
+    return () => {
+      console.log("will unmount");
+    };
   }, [postsStatus, dispatch]);
+
   const orderedPosts = React.useMemo(() => {
     if (posts.length === 0) return posts;
     return posts.slice().sort((a, b) => b.date.localeCompare(a.date));
