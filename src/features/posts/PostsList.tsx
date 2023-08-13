@@ -18,11 +18,10 @@ const PostsList: React.FC = () => {
   const error = useAppSelector(getPostError);
 
   React.useEffect(() => {
-    if (postsStatus === "idle") dispatch(fetchPosts());
-    return () => {
-      console.log("will unmount");
-    };
-  }, [postsStatus, dispatch]);
+    //! if condition has been added in the thunk, don't need to clean up promise here
+    //! clean up promise but api still calls twice
+    dispatch(fetchPosts());
+  }, [dispatch]);
 
   const orderedPosts = React.useMemo(() => {
     if (posts.length === 0) return posts;
@@ -30,6 +29,7 @@ const PostsList: React.FC = () => {
   }, [posts]);
 
   let content;
+  console.log({ postsStatus });
   if (postsStatus === "loading") {
     content = <p>"Loading..."</p>;
   } else if (postsStatus === "succeeded") {

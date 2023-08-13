@@ -18,4 +18,9 @@ export interface IPostType extends NewPostType {
   reactions: ReactionsType;
 }
 
-export type PostStatusType = "idle" | "loading" | "succeeded" | "failed";
+export type PostStatusType =
+  | "idle"
+  | "loading"
+  | "succeeded"
+  | "failed"
+  | "fulfilled";

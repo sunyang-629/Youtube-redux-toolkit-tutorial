@@ -43,8 +43,9 @@ export const fetchPosts = createAsyncThunk(
     return response.data;
   },
   {
+    //! Adding condition here to make sure api only calls one time in useEffect
     condition: (_state, { getState }) => {
-      const { posts } = getState() as { posts: { status: string } };
+      const { posts } = getState() as RootState;
       if (posts.status === "fulfilled" || posts.status === "loading")
         return false;
     },
