@@ -5,38 +5,38 @@ import {
   createAsyncThunk,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
-// import { sub } from "date-fns";
-import { PostType } from "./ReactionButton";
 import axios from "axios";
 import { sub } from "date-fns";
+import {
+  IPostType,
+  NewPostType,
+  PostStatusType,
+  ReactionsType,
+} from "../../types/post";
 const POST_URL = "https://jsonplaceholder.typicode.com/posts";
 
 interface IState {
-  posts: PostType[];
-  status: "idle" | "loading" | "succeeded" | "failed";
+  posts: IPostType[];
+  status: PostStatusType;
   error: string | null;
 }
 
 const initialState: IState = {
-  posts: [] as PostType[],
+  posts: [] as IPostType[],
   status: "idle",
   error: null,
 };
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  // try {
-  const response = await axios.get<PostType[]>(POST_URL);
+  const response = await axios.get<IPostType[]>(POST_URL);
   return response.data;
-  // } catch (error) {
-  //   if (isAxiosError(error)) return error.message;
-  //   return "unknown error";
-  // }
 });
 
 export const addNewPost = createAsyncThunk(
   "posts/addNewPost",
-  async (initialPost: { title: string; body: string; userId: number }) => {
-    const response = await axios.post<PostType>(POST_URL, initialPost);
+  //! Must defined the type of argument here, otherwise it will cause issue in dispatch
+  async (initialPost: NewPostType) => {
+    const response = await axios.post<IPostType>(POST_URL, initialPost);
     return response.data;
   }
 );
@@ -46,18 +46,10 @@ export const postsSlice = createSlice({
   initialState,
   reducers: {
     postAdded: {
-      reducer: (state, action: PayloadAction<PostType>) => {
+      reducer: (state, action: PayloadAction<IPostType>) => {
         state.posts.push(action.payload);
       },
-      prepare: ({
-        title,
-        body,
-        userId,
-      }: {
-        title: string;
-        body: string;
-        userId: number;
-      }) => {
+      prepare: ({ title, body, userId }: NewPostType) => {
         return {
           payload: {
             id: nanoid(),
@@ -80,13 +72,7 @@ export const postsSlice = createSlice({
       state,
       action: PayloadAction<{
         postId: string;
-        reaction: keyof {
-          thumbsUp: number;
-          wow: number;
-          heart: number;
-          rocket: number;
-          coffee: number;
-        };
+        reaction: keyof ReactionsType;
       }>
     ) => {
       const { postId, reaction } = action.payload;

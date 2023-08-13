@@ -1,11 +1,11 @@
 import React from "react";
-import { PostType } from "./ReactionButton";
 import PostAuthor from "./PostAuthor";
 import TimeAgo from "./TimeAgo";
 import ReactionButton from "./ReactionButton";
+import { IPostType } from "../../types/post";
 
 interface IPostExcerpt {
-  post: PostType;
+  post: IPostType;
 }
 
 const PostExcerpt: React.FC<IPostExcerpt> = ({ post }) => {

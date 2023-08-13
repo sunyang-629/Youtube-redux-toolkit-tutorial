@@ -1,19 +1,18 @@
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
-// import { nanoid } from "@reduxjs/toolkit";
 import { addNewPost } from "./postsSlice";
-// import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
 import { v4 as uuidv4 } from "uuid";
+import { NewPostType } from "../../types/post";
 
 const AddPostForm: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [newPost, setNewPost] = React.useState<{
-    title: string;
-    body: string;
-    userId: number;
-  }>({ title: "", body: "", userId: 0 });
+  const [newPost, setNewPost] = React.useState<NewPostType>({
+    title: "",
+    body: "",
+    userId: 0,
+  });
   const [addRequestStatus, setAddRequestStatus] =
     React.useState<string>("idle");
 
@@ -33,7 +32,7 @@ const AddPostForm: React.FC = () => {
     if (canSave) {
       try {
         setAddRequestStatus("pending");
-        // unwrap allows you to throw the error form thunk, otherwise it will always return resovle
+        //! unwrap allows you to throw the error form thunk, otherwise it will always return resovle
         dispatch(addNewPost(newPost)).unwrap();
         setNewPost({ title: "", body: "", userId: 0 });
       } catch (error) {

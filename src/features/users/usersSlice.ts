@@ -1,19 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
+import { UserType } from "../../types/user";
 
 const USERS_URL = "https://jsonplaceholder.typicode.com/users";
-
-type UserType = {
-  id: number;
-  name: string;
-};
-
-// interface IState {
-//   users: UserType[];
-//   status: "idle" | "loading" | "succeeded" | "failed";
-//   error: string | null;
-// }
 
 const initialState: UserType[] = [];
 

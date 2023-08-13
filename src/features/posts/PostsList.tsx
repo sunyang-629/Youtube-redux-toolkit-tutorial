@@ -11,7 +11,7 @@ import PostExcerpt from "./PostExcerpt";
 
 const PostsList: React.FC = () => {
   const dispatch = useAppDispatch();
-  //if the shape of the state every chagnes, we'll just need to change it in slice
+  //! if the shape of the state every chagnes, we'll just need to change it in slice
   const posts = useAppSelector(selectAllPosts);
   const postsStatus = useAppSelector(getPostsStatus);
   const error = useAppSelector(getPostError);
@@ -20,7 +20,6 @@ const PostsList: React.FC = () => {
     if (postsStatus === "idle") dispatch(fetchPosts());
   }, [postsStatus, dispatch]);
   const orderedPosts = React.useMemo(() => {
-    console.log({ posts });
     if (posts.length === 0) return posts;
     return posts.slice().sort((a, b) => b.date.localeCompare(a.date));
   }, [posts]);
