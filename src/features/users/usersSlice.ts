@@ -1,16 +1,26 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
+import axios from "axios";
+import { UserType } from "../../types/user";
 
-const initialState = [
-  { id: "0", name: "Dude lebowski" },
-  { id: "1", name: "Neil Young" },
-  { id: "2", name: "Dave Gray" },
-];
+const USERS_URL = "https://jsonplaceholder.typicode.com/users";
+
+const initialState: UserType[] = [];
+
+export const fetchUsers = createAsyncThunk("users/fetchUsers", async () => {
+  const response = await axios.get(USERS_URL);
+  return response.data;
+});
 
 const usersSlice = createSlice({
   name: "users",
   initialState,
   reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(fetchUsers.fulfilled, (_state, action) => {
+      return action.payload;
+    });
+  },
 });
 
 export const selectAllUsers = (state: RootState) => state.users;

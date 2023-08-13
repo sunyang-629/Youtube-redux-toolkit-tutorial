@@ -3,7 +3,7 @@ import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
 
 interface IPostAuthor {
-  userId: string;
+  userId: number;
 }
 
 const PostAuthor: React.FC<IPostAuthor> = ({ userId }) => {

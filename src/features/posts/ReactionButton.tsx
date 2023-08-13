@@ -2,6 +2,7 @@ import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 import { reactionAdd } from "./postsSlice";
 import { v4 as uuidv4 } from "uuid";
+import { IPostType, ReactionsType } from "../../types/post";
 
 const reactionEmoji = {
   thumbsUp: "👍",
@@ -11,23 +12,8 @@ const reactionEmoji = {
   coffee: "☕",
 };
 
-type ReactionsType = {
-  thumbsUp: number;
-  wow: number;
-  heart: number;
-  rocket: number;
-  coffee: number;
-};
-
 interface IReactionButton {
-  post: {
-    id: string;
-    title: string;
-    content: string;
-    userId: string;
-    date: string;
-    reactions: ReactionsType;
-  };
+  post: IPostType;
 }
 
 const ReactionButton: React.FC<IReactionButton> = ({ post }) => {
