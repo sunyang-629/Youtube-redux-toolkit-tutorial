@@ -3,6 +3,7 @@ import {
   createSlice,
   nanoid,
   createAsyncThunk,
+  CaseReducer,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
@@ -27,6 +28,14 @@ const initialState: IState = {
   error: null,
 };
 
+const initialReactions = {
+  thumbsUp: 0,
+  wow: 0,
+  heart: 0,
+  rocket: 0,
+  coffee: 0,
+};
+
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   const response = await axios.get<IPostType[]>(POST_URL);
   return response.data;
@@ -40,6 +49,18 @@ export const addNewPost = createAsyncThunk(
     return response.data;
   }
 );
+
+const reactionAddReducer: CaseReducer<
+  IState,
+  PayloadAction<{
+    postId: string;
+    reaction: keyof ReactionsType;
+  }>
+> = (state, action) => {
+  const { postId, reaction } = action.payload;
+  const existingPost = state.posts.find((post) => post.id === postId);
+  if (existingPost) existingPost.reactions[reaction] += 1;
+};
 
 export const postsSlice = createSlice({
   name: "posts",
@@ -57,28 +78,12 @@ export const postsSlice = createSlice({
             body,
             userId,
             date: new Date().toISOString(),
-            reactions: {
-              thumbsUp: 0,
-              wow: 0,
-              heart: 0,
-              rocket: 0,
-              coffee: 0,
-            },
+            reactions: initialReactions,
           },
         };
       },
     },
-    reactionAdd: (
-      state,
-      action: PayloadAction<{
-        postId: string;
-        reaction: keyof ReactionsType;
-      }>
-    ) => {
-      const { postId, reaction } = action.payload;
-      const existingPost = state.posts.find((post) => post.id === postId);
-      if (existingPost) existingPost.reactions[reaction] += 1;
-    },
+    reactionAdd: reactionAddReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -92,13 +97,7 @@ export const postsSlice = createSlice({
         const loadedPosts = action.payload.map((post) => ({
           ...post,
           date: sub(new Date(), { minutes: min++ }).toISOString(),
-          reactions: {
-            thumbsUp: 0,
-            wow: 0,
-            heart: 0,
-            rocket: 0,
-            coffee: 0,
-          },
+          reactions: initialReactions,
         }));
 
         state.posts = state.posts.concat(loadedPosts);
@@ -110,13 +109,7 @@ export const postsSlice = createSlice({
       .addCase(addNewPost.fulfilled, (state, action) => {
         action.payload.userId = Number(action.payload.userId);
         action.payload.date = new Date().toISOString();
-        action.payload.reactions = {
-          thumbsUp: 0,
-          wow: 0,
-          heart: 0,
-          rocket: 0,
-          coffee: 0,
-        };
+        action.payload.reactions = initialReactions;
         state.posts.push(action.payload);
       });
   },
