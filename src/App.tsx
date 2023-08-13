@@ -9,7 +9,9 @@ function App() {
   return (
     <>
       <h1>Redux toolkit tutorial</h1>
+      {/* lesson1 */}
       {/* <Counter /> */}
+      {/* lesson2 */}
       <AddPostForm />
       <PostsList />
     </>

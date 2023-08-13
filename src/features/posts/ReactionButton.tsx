@@ -11,6 +11,15 @@ const reactionEmoji = {
   coffee: "☕",
 };
 
+export type PostType = {
+  id: string;
+  title: string;
+  body: string;
+  userId: number;
+  date: string;
+  reactions: ReactionsType;
+};
+
 type ReactionsType = {
   thumbsUp: number;
   wow: number;
@@ -20,14 +29,7 @@ type ReactionsType = {
 };
 
 interface IReactionButton {
-  post: {
-    id: string;
-    title: string;
-    content: string;
-    userId: string;
-    date: string;
-    reactions: ReactionsType;
-  };
+  post: PostType;
 }
 
 const ReactionButton: React.FC<IReactionButton> = ({ post }) => {

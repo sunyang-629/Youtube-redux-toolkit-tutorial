@@ -1,34 +1,45 @@
 import React from "react";
-import { useAppSelector } from "../../app/hooks";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { v4 as uuidv4 } from "uuid";
-import { selectAllPosts } from "./postsSlice";
-import PostAuthor from "./PostAuthor";
-import TimeAgo from "./TimeAgo";
-import ReactionButton from "./ReactionButton";
+import {
+  selectAllPosts,
+  getPostsStatus,
+  getPostError,
+  fetchPosts,
+} from "./postsSlice";
+import PostExcerpt from "./PostExcerpt";
 
 const PostsList: React.FC = () => {
+  const dispatch = useAppDispatch();
   //if the shape of the state every chagnes, we'll just need to change it in slice
   const posts = useAppSelector(selectAllPosts);
+  const postsStatus = useAppSelector(getPostsStatus);
+  const error = useAppSelector(getPostError);
 
+  React.useEffect(() => {
+    if (postsStatus === "idle") dispatch(fetchPosts());
+  }, [postsStatus, dispatch]);
   const orderedPosts = React.useMemo(() => {
+    console.log({ posts });
+    if (posts.length === 0) return posts;
     return posts.slice().sort((a, b) => b.date.localeCompare(a.date));
   }, [posts]);
 
-  const renderedPosts = orderedPosts.map((post) => (
-    <article key={uuidv4()}>
-      <h3>{post.title}</h3>
-      <p>{post.content.substring(0, 100)}</p>
-      <p className="postCredit">
-        <PostAuthor userId={post.userId} />
-        <TimeAgo timestamp={post.date} />
-      </p>
-      <ReactionButton post={post} />
-    </article>
-  ));
+  let content;
+  if (postsStatus === "loading") {
+    content = <p>"Loading..."</p>;
+  } else if (postsStatus === "succeeded") {
+    content = orderedPosts.map((post) => (
+      <PostExcerpt post={post} key={uuidv4()} />
+    ));
+  } else if (postsStatus === "failed") {
+    content = <p>{error}</p>;
+  }
+
   return (
     <section>
       <h2>Posts</h2>
-      {renderedPosts}
+      {content}
     </section>
   );
 };

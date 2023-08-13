@@ -1,7 +1,7 @@
 import React from "react";
 import { useAppDispatch } from "../../app/hooks";
 // import { nanoid } from "@reduxjs/toolkit";
-import { postAdded } from "./postsSlice";
+import { addNewPost } from "./postsSlice";
 // import { useDispatch } from "react-redux";
 import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
@@ -11,29 +11,37 @@ const AddPostForm: React.FC = () => {
   const dispatch = useAppDispatch();
   const [newPost, setNewPost] = React.useState<{
     title: string;
-    content: string;
-    userId: string;
-  }>({ title: "", content: "", userId: "" });
+    body: string;
+    userId: number;
+  }>({ title: "", body: "", userId: 0 });
+  const [addRequestStatus, setAddRequestStatus] =
+    React.useState<string>("idle");
 
   const users = useAppSelector(selectAllUsers);
 
   const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setNewPost((post) => ({ ...post, title: e.target.value }));
   const onContentChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-    setNewPost((post) => ({ ...post, content: e.target.value }));
+    setNewPost((post) => ({ ...post, body: e.target.value }));
   const onAuthorChanged = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setNewPost((post) => ({ ...post, userId: e.target.value }));
+    setNewPost((post) => ({ ...post, userId: Number(e.target.value) }));
 
   const canSave =
-    Boolean(newPost.title) &&
-    Boolean(newPost.content) &&
-    Boolean(newPost.userId);
+    Object.values(newPost).every(Boolean) && addRequestStatus === "idle";
 
   const onSavePostClicked = () => {
     if (canSave) {
-      dispatch(postAdded({ ...newPost }));
+      try {
+        setAddRequestStatus("pending");
+        // unwrap allows you to throw the error form thunk, otherwise it will always return resovle
+        dispatch(addNewPost(newPost)).unwrap();
+        setNewPost({ title: "", body: "", userId: 0 });
+      } catch (error) {
+        console.error("Failed to save the post", error);
+      } finally {
+        setAddRequestStatus("idle");
+      }
     }
-    setNewPost({ title: "", content: "", userId: "" });
   };
 
   const userOptions = React.useMemo(
@@ -72,7 +80,7 @@ const AddPostForm: React.FC = () => {
         <textarea
           name="postContent"
           id="postContent"
-          value={newPost.content}
+          value={newPost.body}
           onChange={onContentChanged}
         />
         <button type="button" disabled={!canSave} onClick={onSavePostClicked}>
