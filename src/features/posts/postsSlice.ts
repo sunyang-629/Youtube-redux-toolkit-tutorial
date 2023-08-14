@@ -9,6 +9,7 @@ import { RootState } from "../../app/store";
 import axios from "axios";
 import { sub } from "date-fns";
 import {
+  IEditPostType,
   IPostType,
   NewPostType,
   PostStatusType,
@@ -61,6 +62,33 @@ export const addNewPost = createAsyncThunk(
   }
 );
 
+export const updatePost = createAsyncThunk(
+  "posts/updatePost",
+  async (initialPost: IEditPostType) => {
+    const { id } = initialPost;
+    try {
+      const response = await axios.put(`${POST_URL}/${id}`, initialPost);
+      return response.data;
+    } catch (error) {
+      return initialPost;
+    }
+  }
+);
+
+export const deletePost = createAsyncThunk(
+  "posts/deletePost",
+  async (initialPost: { id: string }) => {
+    const { id } = initialPost;
+    try {
+      const response = await axios.delete(`${POST_URL}/${id}`);
+      if (response.status === 200) return initialPost;
+      return `${response.status}:${response.statusText}`;
+    } catch (error) {
+      return initialPost;
+    }
+  }
+);
+
 const reactionAddReducer: CaseReducer<
   IState,
   PayloadAction<{
@@ -73,27 +101,29 @@ const reactionAddReducer: CaseReducer<
   if (existingPost) existingPost.reactions[reaction] += 1;
 };
 
+const postAddedReducer = {
+  reducer: (state: IState, action: PayloadAction<IPostType>) => {
+    state.posts.push(action.payload);
+  },
+  prepare: ({ title, body, userId }: NewPostType) => {
+    return {
+      payload: {
+        id: nanoid(),
+        title,
+        body,
+        userId,
+        date: new Date().toISOString(),
+        reactions: initialReactions,
+      },
+    };
+  },
+};
+
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    postAdded: {
-      reducer: (state, action: PayloadAction<IPostType>) => {
-        state.posts.push(action.payload);
-      },
-      prepare: ({ title, body, userId }: NewPostType) => {
-        return {
-          payload: {
-            id: nanoid(),
-            title,
-            body,
-            userId,
-            date: new Date().toISOString(),
-            reactions: initialReactions,
-          },
-        };
-      },
-    },
+    postAdded: postAddedReducer,
     reactionAdd: reactionAddReducer,
   },
   extraReducers: (builder) => {
@@ -122,6 +152,26 @@ export const postsSlice = createSlice({
         action.payload.date = new Date().toISOString();
         action.payload.reactions = initialReactions;
         state.posts.push(action.payload);
+      })
+      .addCase(updatePost.fulfilled, (state, action) => {
+        if (!action.payload.id) {
+          console.log("Update could not complete");
+          return;
+        }
+        const { id } = action.payload;
+        action.payload.date = new Date().toISOString();
+        const posts = state.posts.filter((post) => post.id !== id);
+        state.posts = [...posts, action.payload];
+      })
+      .addCase(deletePost.fulfilled, (state, action) => {
+        if (typeof action.payload === "string") {
+          console.log("Delete could not complete");
+          return;
+        } else {
+          const { id } = action.payload;
+          const posts = state.posts.filter((post) => post.id !== id);
+          state.posts = posts;
+        }
       });
   },
 });
@@ -129,6 +179,8 @@ export const postsSlice = createSlice({
 export const selectAllPosts = (state: RootState) => state.posts.posts;
 export const getPostsStatus = (state: RootState) => state.posts.status;
 export const getPostError = (state: RootState) => state.posts.error;
+export const selectPostById = (state: RootState, postId: string) =>
+  state.posts.posts.find((post) => post.id.toString() === postId);
 
 export const { postAdded, reactionAdd } = postsSlice.actions;
 
