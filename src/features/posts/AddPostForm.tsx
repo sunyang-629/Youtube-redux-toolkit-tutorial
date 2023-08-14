@@ -5,9 +5,11 @@ import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
 import { v4 as uuidv4 } from "uuid";
 import { NewPostType } from "../../types/post";
+import { useNavigate } from "react-router-dom";
 
 const AddPostForm: React.FC = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const [newPost, setNewPost] = React.useState<NewPostType>({
     title: "",
     body: "",
@@ -32,9 +34,10 @@ const AddPostForm: React.FC = () => {
     if (canSave) {
       try {
         setAddRequestStatus("pending");
-        //! unwrap allows you to throw the error form thunk, otherwise it will always return resovle
+        // unwrap allows you to throw the error form thunk, otherwise it will always return resovle
         dispatch(addNewPost(newPost)).unwrap();
         setNewPost({ title: "", body: "", userId: 0 });
+        navigate("/");
       } catch (error) {
         console.error("Failed to save the post", error);
       } finally {

@@ -26,7 +26,7 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  /* place-items: center; */
   min-width: 320px;
   min-height: 100vh;
 }
@@ -82,6 +82,7 @@ article {
 form {
   display: flex;
   flex-direction: column;
+  min-width: 800px;
 }
 
 .postCredit {
@@ -94,4 +95,73 @@ form {
   border: none;
   color: whitesmoke;
   font-size: 1rem;
+}
+
+.postCredit a,
+.postCredit a:visited {
+  margin-right: 0.5rem;
+  color: whitesmoke;
+}
+
+.postCredit a:hover,
+.postCredit a:focus {
+  color: hsla(0, 0%, 100%, 0.8);
+}
+
+.excerpt {
+  font-style: italic;
+}
+
+.reactionButton {
+  margin: 0 0.25em 0 0;
+  background: transparent;
+  border: none;
+  /* color: #000; */
+  font-size: 1rem;
+}
+
+.deleteButton {
+  background-color: palevioletred;
+  color: white;
+}
+
+header {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  background-color: purple;
+  color: whitesmoke;
+  position: sticky;
+  top: 0;
+}
+
+nav {
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav ul {
+  list-style-type: none;
+}
+
+nav ul li {
+  display: inline-block;
+  margin-right: 1rem;
+}
+
+nav a,
+nav a:visited {
+  color: #fff;
+  text-decoration: none;
+}
+
+nav a:hover,
+nav a:focus {
+  text-decoration: underline;
+}
+
+.App {
+  display: flex;
+  place-items: center;
 }

@@ -1,27 +1,22 @@
 import React from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { useAppSelector } from "../../app/hooks";
 import { v4 as uuidv4 } from "uuid";
-import {
-  selectAllPosts,
-  getPostsStatus,
-  getPostError,
-  fetchPosts,
-} from "./postsSlice";
+import { selectAllPosts, getPostsStatus, getPostError } from "./postsSlice";
 import PostExcerpt from "./PostExcerpt";
 // import { PayloadAction } from "@reduxjs/toolkit";
 
 const PostsList: React.FC = () => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
   //! if the shape of the state every chagnes, we'll just need to change it in slice
   const posts = useAppSelector(selectAllPosts);
   const postsStatus = useAppSelector(getPostsStatus);
   const error = useAppSelector(getPostError);
 
-  React.useEffect(() => {
-    //! if condition has been added in the thunk, don't need to clean up promise here
-    //! clean up promise but api still calls twice
-    dispatch(fetchPosts());
-  }, [dispatch]);
+  // React.useEffect(() => {
+  //   //! if condition has been added in the thunk, don't need to clean up promise here
+  //   //! clean up promise but api still calls twice
+  //   dispatch(fetchPosts());
+  // }, [dispatch]);
 
   const orderedPosts = React.useMemo(() => {
     if (posts.length === 0) return posts;
@@ -29,7 +24,7 @@ const PostsList: React.FC = () => {
   }, [posts]);
 
   let content;
-  console.log({ postsStatus });
+  // console.log({ postsStatus });
   if (postsStatus === "loading") {
     content = <p>"Loading..."</p>;
   } else if (postsStatus === "succeeded") {
@@ -42,7 +37,7 @@ const PostsList: React.FC = () => {
 
   return (
     <section>
-      <h2>Posts</h2>
+      {/* <h2>Posts</h2> */}
       {content}
     </section>
   );

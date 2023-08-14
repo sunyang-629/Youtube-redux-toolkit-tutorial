@@ -18,6 +18,11 @@ export interface IPostType extends NewPostType {
   reactions: ReactionsType;
 }
 
+export interface IEditPostType extends NewPostType {
+  id: string;
+  reactions: ReactionsType;
+}
+
 export type PostStatusType =
   | "idle"
   | "loading"
