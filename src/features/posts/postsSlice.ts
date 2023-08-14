@@ -40,6 +40,7 @@ const initialReactions = {
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async () => {
+    console.log("fetch posts");
     const response = await axios.get<IPostType[]>(POST_URL);
     return response.data;
   },
@@ -160,7 +161,7 @@ export const postsSlice = createSlice({
         }
         const { id } = action.payload;
         action.payload.date = new Date().toISOString();
-        const posts = state.posts.filter((post) => post.id !== id);
+        const posts = state.posts.filter((post) => post.id.toString() !== id);
         state.posts = [...posts, action.payload];
       })
       .addCase(deletePost.fulfilled, (state, action) => {
@@ -169,7 +170,7 @@ export const postsSlice = createSlice({
           return;
         } else {
           const { id } = action.payload;
-          const posts = state.posts.filter((post) => post.id !== id);
+          const posts = state.posts.filter((post) => post.id.toString() !== id);
           state.posts = posts;
         }
       });
