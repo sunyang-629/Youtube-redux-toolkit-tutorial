@@ -32,12 +32,12 @@ const EditPostForm: React.FC = () => {
   const canSave =
     Object.values(editPost).every(Boolean) && addRequestStatus === "idle";
 
-  const onSavePostClicked = () => {
+  const onSavePostClicked = async () => {
     if (canSave) {
       try {
         setAddRequestStatus("pending");
         // unwrap allows you to throw the error form thunk, otherwise it will always return resovle
-        dispatch(
+        await dispatch(
           updatePost({
             id: postId!,
             title: editPost.title,
@@ -57,10 +57,10 @@ const EditPostForm: React.FC = () => {
     }
   };
 
-  const onDeletePostClicked = () => {
+  const onDeletePostClicked = async () => {
     try {
       setAddRequestStatus("pending");
-      dispatch(deletePost({ id: postId! })).unwrap();
+      await dispatch(deletePost({ id: postId! })).unwrap();
       setEidtPost({ title: "", body: "", userId: 0 });
       navigate("/");
     } catch (error) {

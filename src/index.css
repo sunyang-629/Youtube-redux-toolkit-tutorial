@@ -139,6 +139,7 @@ header {
 nav {
   display: flex;
   justify-content: flex-end;
+  width: 100vw;
 }
 
 nav ul {
@@ -164,4 +165,5 @@ nav a:focus {
 .App {
   display: flex;
   place-items: center;
+  flex-direction: column;
 }

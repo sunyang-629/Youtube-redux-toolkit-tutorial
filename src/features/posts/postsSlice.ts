@@ -69,6 +69,7 @@ export const updatePost = createAsyncThunk(
     const { id } = initialPost;
     try {
       const response = await axios.put(`${POST_URL}/${id}`, initialPost);
+      console.log({ response: response.data });
       return response.data;
     } catch (error) {
       return initialPost;
@@ -161,7 +162,9 @@ export const postsSlice = createSlice({
         }
         const { id } = action.payload;
         action.payload.date = new Date().toISOString();
-        const posts = state.posts.filter((post) => post.id.toString() !== id);
+        const posts = state.posts.filter(
+          (post) => post.id.toString() !== id.toString()
+        );
         state.posts = [...posts, action.payload];
       })
       .addCase(deletePost.fulfilled, (state, action) => {
