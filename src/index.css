@@ -1,3 +1,11 @@
+body {
+  margin: 0;
+  display: flex;
+  /* place-items: center; */
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100%;
+}
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
@@ -7,6 +15,7 @@
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
 
+  /* width: inherit !important; */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -21,14 +30,6 @@ a {
 }
 a:hover {
   color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  /* place-items: center; */
-  min-width: 320px;
-  min-height: 100vh;
 }
 
 h1 {
@@ -139,7 +140,7 @@ header {
 nav {
   display: flex;
   justify-content: flex-end;
-  width: 100vw;
+  /* width: 100vw; */
 }
 
 nav ul {

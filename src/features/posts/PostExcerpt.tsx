@@ -9,7 +9,7 @@ interface IPostExcerpt {
   post: IPostType;
 }
 
-const PostExcerpt: React.FC<IPostExcerpt> = ({ post }) => {
+let PostExcerpt: React.FC<IPostExcerpt> = ({ post }) => {
   return (
     <article>
       <h2>{post.title}</h2>
@@ -23,5 +23,7 @@ const PostExcerpt: React.FC<IPostExcerpt> = ({ post }) => {
     </article>
   );
 };
+
+PostExcerpt = React.memo(PostExcerpt);
 
 export default PostExcerpt;

@@ -1,9 +1,10 @@
 import {
   PayloadAction,
   createSlice,
-  nanoid,
+  createSelector,
   createAsyncThunk,
   CaseReducer,
+  createEntityAdapter,
 } from "@reduxjs/toolkit";
 import { RootState } from "../../app/store";
 import axios from "axios";
@@ -21,12 +22,17 @@ interface IState {
   posts: IPostType[];
   status: PostStatusType;
   error: string | null;
+  count: number;
 }
 
+export const postsAdapter = createEntityAdapter({
+  sortComparer: (a: IPostType, b: IPostType) => b.date.localeCompare(a.date),
+});
 const initialState: IState = {
   posts: [] as IPostType[],
   status: "idle",
   error: null,
+  count: 0,
 };
 
 const initialReactions = {
@@ -102,31 +108,35 @@ const reactionAddReducer: CaseReducer<
   const existingPost = state.posts.find((post) => post.id === postId);
   if (existingPost) existingPost.reactions[reaction] += 1;
 };
-
-const postAddedReducer = {
-  reducer: (state: IState, action: PayloadAction<IPostType>) => {
-    state.posts.push(action.payload);
-  },
-  prepare: ({ title, body, userId }: NewPostType) => {
-    return {
-      payload: {
-        id: nanoid(),
-        title,
-        body,
-        userId,
-        date: new Date().toISOString(),
-        reactions: initialReactions,
-      },
-    };
-  },
+const increaseCountReducer: CaseReducer<IState, PayloadAction> = (state) => {
+  state.count = state.count + 1;
 };
+
+// const postAddedReducer = {
+//   reducer: (state: IState, action: PayloadAction<IPostType>) => {
+//     state.posts.push(action.payload);
+//   },
+//   prepare: ({ title, body, userId }: NewPostType) => {
+//     return {
+//       payload: {
+//         id: nanoid(),
+//         title,
+//         body,
+//         userId,
+//         date: new Date().toISOString(),
+//         reactions: initialReactions,
+//       },
+//     };
+//   },
+// };
 
 export const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    postAdded: postAddedReducer,
+    // postAdded: postAddedReducer,
     reactionAdd: reactionAddReducer,
+    increaseCount: increaseCountReducer,
   },
   extraReducers: (builder) => {
     builder
@@ -185,7 +195,17 @@ export const getPostsStatus = (state: RootState) => state.posts.status;
 export const getPostError = (state: RootState) => state.posts.error;
 export const selectPostById = (state: RootState, postId: string) =>
   state.posts.posts.find((post) => post.id.toString() === postId);
+export const selectPostsByUser = createSelector(
+  [selectAllPosts, (_state, userId) => userId],
+  (posts, userId) => posts.filter((post) => post.userId === userId)
+);
 
-export const { postAdded, reactionAdd } = postsSlice.actions;
+export const getCount = (state: RootState) => state.posts.count;
+
+export const {
+  // postAdded,
+  increaseCount,
+  reactionAdd,
+} = postsSlice.actions;
 
 export default postsSlice.reducer;
