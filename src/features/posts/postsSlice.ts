@@ -19,21 +19,21 @@ import {
 const POST_URL = "https://jsonplaceholder.typicode.com/posts";
 
 interface IState {
-  posts: IPostType[];
+  // posts: IPostType[];
   status: PostStatusType;
   error: string | null;
   count: number;
 }
 
-export const postsAdapter = createEntityAdapter({
-  sortComparer: (a: IPostType, b: IPostType) => b.date.localeCompare(a.date),
+export const postsAdapter = createEntityAdapter<IPostType>({
+  sortComparer: (a, b) => b.date.localeCompare(a.date),
 });
-const initialState: IState = {
-  posts: [] as IPostType[],
+const initialState = postsAdapter.getInitialState<IState>({
+  // posts: [] as IPostType[],
   status: "idle",
   error: null,
   count: 0,
-};
+});
 
 const initialReactions = {
   thumbsUp: 0,
@@ -46,7 +46,6 @@ const initialReactions = {
 export const fetchPosts = createAsyncThunk(
   "posts/fetchPosts",
   async () => {
-    console.log("fetch posts");
     const response = await axios.get<IPostType[]>(POST_URL);
     return response.data;
   },
@@ -98,17 +97,20 @@ export const deletePost = createAsyncThunk(
 );
 
 const reactionAddReducer: CaseReducer<
-  IState,
+  typeof initialState,
   PayloadAction<{
     postId: string;
     reaction: keyof ReactionsType;
   }>
 > = (state, action) => {
   const { postId, reaction } = action.payload;
-  const existingPost = state.posts.find((post) => post.id === postId);
+  const existingPost = state.entities[postId];
+  // const existingPost = state.posts.find((post) => post.id === postId);
   if (existingPost) existingPost.reactions[reaction] += 1;
 };
-const increaseCountReducer: CaseReducer<IState, PayloadAction> = (state) => {
+const increaseCountReducer: CaseReducer<typeof initialState, PayloadAction> = (
+  state
+) => {
   state.count = state.count + 1;
 };
 
@@ -153,7 +155,8 @@ export const postsSlice = createSlice({
           reactions: initialReactions,
         }));
 
-        state.posts = state.posts.concat(loadedPosts);
+        // state.posts = state.posts.concat(loadedPosts);
+        postsAdapter.upsertMany(state, loadedPosts);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
@@ -163,19 +166,21 @@ export const postsSlice = createSlice({
         action.payload.userId = Number(action.payload.userId);
         action.payload.date = new Date().toISOString();
         action.payload.reactions = initialReactions;
-        state.posts.push(action.payload);
+        // state.posts.push(action.payload);
+        postsAdapter.addOne(state, action.payload);
       })
       .addCase(updatePost.fulfilled, (state, action) => {
         if (!action.payload.id) {
           console.log("Update could not complete");
           return;
         }
-        const { id } = action.payload;
+        // const { id } = action.payload;
         action.payload.date = new Date().toISOString();
-        const posts = state.posts.filter(
-          (post) => post.id.toString() !== id.toString()
-        );
-        state.posts = [...posts, action.payload];
+        // const posts = state.posts.filter(
+        //   (post) => post.id.toString() !== id.toString()
+        // );
+        // state.posts = [...posts, action.payload];
+        postsAdapter.upsertOne(state, action.payload);
       })
       .addCase(deletePost.fulfilled, (state, action) => {
         if (typeof action.payload === "string") {
@@ -183,18 +188,24 @@ export const postsSlice = createSlice({
           return;
         } else {
           const { id } = action.payload;
-          const posts = state.posts.filter((post) => post.id.toString() !== id);
-          state.posts = posts;
+          // const posts = state.posts.filter((post) => post.id.toString() !== id);
+          // state.posts = posts;
+          postsAdapter.removeOne(state, id);
         }
       });
   },
 });
 
-export const selectAllPosts = (state: RootState) => state.posts.posts;
+export const {
+  selectAll: selectAllPosts,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+} = postsAdapter.getSelectors<RootState>((state) => state.posts);
+// export const selectAllPosts = (state: RootState) => state.posts.posts;
 export const getPostsStatus = (state: RootState) => state.posts.status;
 export const getPostError = (state: RootState) => state.posts.error;
-export const selectPostById = (state: RootState, postId: string) =>
-  state.posts.posts.find((post) => post.id.toString() === postId);
+// export const selectPostById = (state: RootState, postId: string) =>
+//   state.posts.posts.find((post) => post.id.toString() === postId);
 export const selectPostsByUser = createSelector(
   [selectAllPosts, (_state, userId) => userId],
   (posts, userId) => posts.filter((post) => post.userId === userId)
