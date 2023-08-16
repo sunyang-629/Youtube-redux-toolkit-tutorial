@@ -1,9 +1,11 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Layout from "../components/layouts/Layout";
 import PostsList from "../features/posts/PostsList";
 import AddPostForm from "../features/posts/AddPostForm";
 import SinglePostPage from "../features/posts/SinglePostPage";
 import EditPostForm from "../features/posts/EditPostForm";
+import UserList from "../features/users/UserList";
+import UserPage from "../features/users/UserPage";
 
 const router = createBrowserRouter([
   {
@@ -30,6 +32,23 @@ const router = createBrowserRouter([
             element: <EditPostForm />,
           },
         ],
+      },
+      {
+        path: "user",
+        children: [
+          {
+            index: true,
+            element: <UserList />,
+          },
+          {
+            path: ":userId",
+            element: <UserPage />,
+          },
+        ],
+      },
+      {
+        path: "*",
+        element: <Navigate to="/" replace />,
       },
     ],
   },
