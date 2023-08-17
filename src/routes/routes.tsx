@@ -6,6 +6,7 @@ import SinglePostPage from "../features/posts/SinglePostPage";
 import EditPostForm from "../features/posts/EditPostForm";
 import UserList from "../features/users/UserList";
 import UserPage from "../features/users/UserPage";
+import TodoList from "../features/todos/TodoList";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,15 @@ const router = createBrowserRouter([
           {
             path: ":userId",
             element: <UserPage />,
+          },
+        ],
+      },
+      {
+        path: "todo",
+        children: [
+          {
+            index: true,
+            element: <TodoList />,
           },
         ],
       },

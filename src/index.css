@@ -80,6 +80,12 @@ article {
   padding: 1em;
 }
 
+article.todoContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 form {
   display: flex;
   flex-direction: column;
@@ -167,4 +173,66 @@ nav a:focus {
   display: flex;
   place-items: center;
   flex-direction: column;
+}
+
+.todo {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex-direction: row;
+}
+
+.trash {
+  background-color: #fff;
+  color: mediumvioletred;
+}
+
+.trash:focus,
+.trash:hover {
+  filter: brightness(120%);
+}
+
+.new-todo {
+  width: 100%;
+  padding-right: 30px;
+}
+
+/* button {
+  min-width: 50px;
+  min-height: 50px;
+  border: 1px solid #333;
+  border-radius: 10%;
+  cursor: pointer;
+} */
+
+input[type="text"] {
+  width: 100%;
+  padding: 0.5rem;
+  border-radius: 10px;
+  border: 0.5px solid #333;
+}
+
+.submit {
+  background-color: gray;
+  color: #fff;
+}
+
+.submit:focus,
+.submit:hover {
+  background-color: limegreen;
+}
+
+.addForm {
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #333;
+  margin-bottom: 1rem;
+  flex-direction: row;
+}
+
+.addForm label {
+  position: absolute;
+  left: -10000px;
 }
