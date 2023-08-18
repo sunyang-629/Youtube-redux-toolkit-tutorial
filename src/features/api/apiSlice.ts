@@ -4,7 +4,7 @@ import { TodoType } from "../../types/todo";
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3500" }),
-  tagTypes: ["Todos"],
+  tagTypes: ["Todos", "Posts"],
   endpoints: (builder) => ({
     getTodos: builder.query<TodoType[], undefined>({
       query: () => "/todos",
