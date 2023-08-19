@@ -1430,29 +1430,32 @@
       }
     },
     {
-      "userId": 1,
       "id": 8,
-      "title": "dolorem dolore est ipsam",
+      "title": "Short title 1",
       "body": "dignissimos aperiam dolorem qui eum\nfacilis quibusdam animi sint suscipit qui sint possimus cum\nquaerat magni maiores excepturi\nipsam ut commodi dolor voluptatum modi aut vitae",
+      "userId": 1,
       "reactions": {
         "thumbsUp": 4,
         "wow": 0,
         "heart": 0,
-        "rocket": 0,
-        "coffee": 6
-      }
+        "rocket": 4,
+        "coffee": 8
+      },
+      "date": "2023-08-19T07:09:04.846Z"
     },
     {
-      "userId": 1,
-      "id": 10,
-      "title": "optio molestias id quia eum",
-      "body": "quo et expedita modi cum officia vel magni\ndoloribus qui repudiandae\nvero nisi sit\nquos veniam quod sed accusamus veritatis error"
-    },
-    {
-      "userId": 2,
       "id": 11,
-      "title": "et ea vero quia laudantium autem",
-      "body": "delectus reiciendis molestiae occaecati non minima eveniet qui voluptatibus\naccusamus in eum beatae sit\nvel qui neque voluptates ut commodi qui incidunt\nut animi commodi"
+      "title": "Modified title 1",
+      "body": "delectus reiciendis molestiae occaecati non minima eveniet qui voluptatibus\naccusamus in eum beatae sit\nvel qui neque voluptates ut commodi qui incidunt\nut animi commodi",
+      "userId": 2,
+      "reactions": {
+        "thumbsUp": 0,
+        "wow": 0,
+        "heart": 0,
+        "rocket": 0,
+        "coffee": 0
+      },
+      "date": "2023-08-19T07:03:14.834Z"
     },
     {
       "userId": 2,

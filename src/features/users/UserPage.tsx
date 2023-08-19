@@ -2,28 +2,39 @@ import React from "react";
 import { useParams, Link } from "react-router-dom";
 import { useAppSelector } from "../../app/hooks";
 import { selectUserById } from "./usersSlice";
-import { selectPostsByUser } from "../posts/postsSlice";
-import { v4 as uuidv4 } from "uuid";
+import { useGetPostsByUserIdQuery } from "../posts/postsSlice";
 
 const UserPage: React.FC = () => {
   const { userId } = useParams();
   const user = useAppSelector((state) => selectUserById(state, Number(userId)));
-  const postsForUser = useAppSelector((state) =>
-    selectPostsByUser(state, Number(userId))
-  ); //! used as a memory hook while returning array/list from selector to avoid unnecessary rerendering
 
-  const postTitles = React.useMemo(() => {
-    return postsForUser.map((post) => (
-      <li key={uuidv4()}>
-        <Link to={`/post/${post.id}`}>{post.title}</Link>
-      </li>
-    ));
-  }, [postsForUser]);
+  const {
+    data: postsForUser,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetPostsByUserIdQuery(Number(userId));
+
+  const content = React.useMemo(() => {
+    if (isLoading) {
+      return <p>Loading...</p>;
+    } else if (isSuccess) {
+      const { ids, entities } = postsForUser;
+      return ids.map((id) => (
+        <li key={id}>
+          <Link to={`/post/${id}`}>{entities[id]?.title}</Link>
+        </li>
+      ));
+    } else if (isError) {
+      return <p>{JSON.stringify(error)}</p>;
+    }
+  }, [postsForUser, isLoading, isError, isSuccess, error]);
 
   return (
     <section>
       <h2>{user?.name}</h2>
-      <ol>{postTitles}</ol>
+      <ol>{content}</ol>
     </section>
   );
 };

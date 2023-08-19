@@ -1,6 +1,6 @@
 import React from "react";
-import { useAppDispatch } from "../../app/hooks";
-import { addNewPost } from "./postsSlice";
+// import { useAppDispatch } from "../../app/hooks";
+import { useAddNewPostMutation } from "./postsSlice";
 import { useAppSelector } from "../../app/hooks";
 import { selectAllUsers } from "../users/usersSlice";
 import { v4 as uuidv4 } from "uuid";
@@ -8,15 +8,13 @@ import { NewPostType } from "../../types/post";
 import { useNavigate } from "react-router-dom";
 
 const AddPostForm: React.FC = () => {
-  const dispatch = useAppDispatch();
+  const [addNewPost, { isLoading }] = useAddNewPostMutation();
   const navigate = useNavigate();
   const [newPost, setNewPost] = React.useState<NewPostType>({
     title: "",
     body: "",
     userId: 0,
   });
-  const [addRequestStatus, setAddRequestStatus] =
-    React.useState<string>("idle");
 
   const users = useAppSelector(selectAllUsers);
 
@@ -27,21 +25,16 @@ const AddPostForm: React.FC = () => {
   const onAuthorChanged = (e: React.ChangeEvent<HTMLSelectElement>) =>
     setNewPost((post) => ({ ...post, userId: Number(e.target.value) }));
 
-  const canSave =
-    Object.values(newPost).every(Boolean) && addRequestStatus === "idle";
+  const canSave = Object.values(newPost).every(Boolean) && !isLoading;
 
-  const onSavePostClicked = () => {
+  const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus("pending");
-        // unwrap allows you to throw the error form thunk, otherwise it will always return resovle
-        dispatch(addNewPost(newPost)).unwrap();
+        await addNewPost(newPost).unwrap();
         setNewPost({ title: "", body: "", userId: 0 });
         navigate("/");
       } catch (error) {
         console.error("Failed to save the post", error);
-      } finally {
-        setAddRequestStatus("idle");
       }
     }
   };
